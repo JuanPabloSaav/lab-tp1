@@ -1,6 +1,6 @@
 class Lector {
   public static void main(String[] args) {
-
+    //test
   }
 
   public static String[] generarLogs(int tamaño) {
