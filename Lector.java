@@ -1,10 +1,14 @@
+
+
 class Lector {
   // deberia llegar args[0] tamaño del arreglo
+  // args[1] deberia ser el limite de lectura del lector de logs
+  // args[2] deberia ser la ubicacion del archivo de logs
   public static void main(String[] args) {
     int tamaño = Integer.parseInt(args[0]);
     String[] logs = generarLogsFijos(tamaño);
- 
-     
+    TareaAnalisis tarea = new TareaAnalisis(logs, 0, logs.length);
+    tarea.fork(); 
   }
 
 
@@ -13,6 +17,7 @@ class Lector {
    * @param tamaño El tamaño del arreglo de logs a generar.
    * @return Un arreglo de strings que contiene los logs generados.
    */
+  //TODO: cambiar para que en vez de generar arrays, que genere archivos de logs con el mismo patron
   public static String[] generarLogs(int tamaño) {
     String[] logs = new String[tamaño];
     for (int i = 0; i < tamaño; i++) {
@@ -22,6 +27,7 @@ class Lector {
         logs[i] = "INFO: Log de información " + i;
       }
     }
+    
     return logs;
   }
 
@@ -32,6 +38,7 @@ class Lector {
    * @param tamaño El tamaño del arreglo de logs a generar.
    * @return Un arreglo de strings que contiene los logs generados.
    */
+  //TODO: cambiar para que en vez de generar arrays, que genere archivos de logs con el mismo patron
   public static String[] generarLogsFijos(int tamaño) {
     String[] logs = new String[tamaño];
     for (int i = 0; i < tamaño; i++) {
