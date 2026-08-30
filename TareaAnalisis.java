@@ -13,10 +13,21 @@ public class TareaAnalisis extends RecursiveTask<Integer>  {
    * @param fin Indice de fin del rango de logs a analizar.
    */
   public TareaAnalisis(String rutaArchivo, int limiteLectura) {
+    Path path = Paths.get(rutaArchivo);
+    /* INFO: horrible problema: si se intenta paralelizar la lectura de un solo archivo de logs,
+     * se tendria que saber cuanta lineas tiene el archivo para poder dividirlo por rangos pero
+     * no se puede saber cuantas lineas tiene un archivo sin leerlo completo. Se puede
+     * resolver leyendo el tamaño en bytes y diviendolo, pero hay que resolver el problema de que
+     * un hilo obtenga justo un byte que esta a la mitad de una linea y no pueda leerla completa.
+     * Podemos solucionar eso pero para algo tan simple como este tp no creo que haga falta.
+     * Otra solucion es cambiar el enfoque y que se creen muchos archivos de logs y dividirlos por los hilos,
+     * asi cada hilo lee un archivo diferente y se puede usar el BufferedReader para leerlo completo sin problemas.
+     */
+    this.limiteLectura = limiteLectura;  
     this.inicio = inicio;
     this.fin = fin;
     // Se crea un prototipo de LecturaLogs con el rango completo de logs
-    this.lecturaLogs = lectorPrototipo.clonarConRango(inicio, fin);
+    this.lecturaLogs = lectorPrototipo.clonarConRango();
   }
 
   /**
