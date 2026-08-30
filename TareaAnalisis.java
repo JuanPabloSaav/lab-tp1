@@ -12,7 +12,7 @@ public class TareaAnalisis extends RecursiveTask<Integer>  {
    * @param inicio Indice de inicio del rango de logs a analizar.
    * @param fin Indice de fin del rango de logs a analizar.
    */
-  public TareaAnalisis(String rutaArchivo, int limiteLectura, int inicio, int fin) {
+  public TareaAnalisis(String rutaArchivo, int limiteLectura) {
     this.inicio = inicio;
     this.fin = fin;
     // Se crea un prototipo de LecturaLogs con el rango completo de logs

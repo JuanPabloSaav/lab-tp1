@@ -1,53 +1,29 @@
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
 
 
 class Lector {
-  // deberia llegar args[0] tamaño del arreglo
-  // args[1] deberia ser el limite de lectura del lector de logs
-  // args[2] deberia ser la ubicacion del archivo de logs
-  public static void main(String[] args) {
-    int tamaño = Integer.parseInt(args[0]);
-    String[] logs = generarLogsFijos(tamaño);
-    TareaAnalisis tarea = new TareaAnalisis(logs, 0, logs.length);
+  // args[0] deberia ser el limite de lectura del lector de logs
+  // args[1] define si crear logs aleatorios(-r), fijos(-s) o ninguno con 
+  public static void main(String[] args) { 
+    int limiteLectura = args.indexOf("-l") != -1 ? Integer.parseInt(args[args.indexOf("-l") + 1]) : 1000;
+    int logsOption = args.indexOf("-r") != -1 ? 1 : args.indexOf("-s") != -1 ? 2 : 0; 
+    
+    if (logsOption == 1) {
+      generarLogs(tamaño);
+    } else if (logsOption == 2) {
+      generarLogsFijos(tamaño);
+    } else {
+      System.out.println("No se generaron logs, se usará un archivo de logs existente.");
+    }
+
+    TareaAnalisis tarea = new TareaAnalisis(rutaArchivo, limiteLectura);
     tarea.fork(); 
   }
 
-
-  /**
-   * Genera un arreglo de logs aleatorios, donde aproximadamente el 10% de los logs son errores y el 90% son logs de información.
-   * @param tamaño El tamaño del arreglo de logs a generar.
-   * @return Un arreglo de strings que contiene los logs generados.
-   */
-  //TODO: cambiar para que en vez de generar arrays, que genere archivos de logs con el mismo patron
-  public static String[] generarLogs(int tamaño) {
-    String[] logs = new String[tamaño];
-    for (int i = 0; i < tamaño; i++) {
-      if (Math.random() < 0.1) {
-        logs[i] = "ERROR: Log de error " + i;
-      } else {
-        logs[i] = "INFO: Log de información " + i;
-      }
-    }
-    
-    return logs;
-  }
-
-  /**
-   * Genera un arreglo de logs con un patrón fijo, donde cada décimo log es un error 
-   * y los demás son logs de información.
-   * Con un tamaño de array de 100, se generarán 10 logs de error y 90 logs de información.
-   * @param tamaño El tamaño del arreglo de logs a generar.
-   * @return Un arreglo de strings que contiene los logs generados.
-   */
-  //TODO: cambiar para que en vez de generar arrays, que genere archivos de logs con el mismo patron
-  public static String[] generarLogsFijos(int tamaño) {
-    String[] logs = new String[tamaño];
-    for (int i = 0; i < tamaño; i++) {
-      if (i % 10 == 0) {
-        logs[i] = "ERROR: Log de error " + i;
-      } else {
-        logs[i] = "INFO: Log de información " + i;
-      }
-    }
-    return logs;
+  private static void generarLogs(){
+    Path logPath = Paths.get("./");
   }
 }
