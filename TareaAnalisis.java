@@ -2,8 +2,8 @@ import java.util.concurrent.RecursiveTask;
 import java.nio.file.Path;
 import java.util.List;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.io.BufferedReader;
+import java.util.regex.Pattern;
 
 public class TareaAnalisis extends RecursiveTask<Integer> {
   private List<Path> logs;
@@ -20,8 +20,9 @@ public class TareaAnalisis extends RecursiveTask<Integer> {
     int contadorErrores = 0;
     try (BufferedReader br = Files.newBufferedReader(log)) {
       String linea;
+      Pattern patron = Pattern.compile(".*ERROR.*[0-9]+.*");
       while ((linea = br.readLine()) != null) {
-        if (linea.contains("ERROR")) {
+        if (patron.matcher(linea).matches()) {
           contadorErrores++;
         }
       }
