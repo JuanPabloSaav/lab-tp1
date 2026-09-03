@@ -1,31 +1,61 @@
 import java.util.concurrent.RecursiveTask;
+import java.nio.file.Path;
+import java.util.List;
+import java.nio.file.Files;
+import java.io.BufferedReader;
+import java.util.regex.Pattern;
 
-public class TareaAnalisis extends RecursiveTask<Integer>  {
-  private static final int limite = 1000;
-
-  private String[] logs;
+public class TareaAnalisis extends RecursiveTask<Integer> {
+  private List<Path> logs;
   private int inicio;
   private int fin;
-  private LecturaLogs lecturaLogs;
 
-  public TareaAnalisis(String[] logs, int inicio, int fin) {
-    this.logs = logs;
+  public TareaAnalisis(List<Path> archivosLogs, int inicio, int fin) {
+    this.logs = archivosLogs;
     this.inicio = inicio;
     this.fin = fin;
-    this.lecturaLogs = new LecturaLogs(logs, inicio, fin);
+  }
+
+  private int buscarErrores(Path log) {
+    int contadorErrores = 0;
+    try (BufferedReader br = Files.newBufferedReader(log)) {
+      String linea;
+      Pattern patron = Pattern.compile(".*ERROR.*[0-9]+.*");
+      while ((linea = br.readLine()) != null) {
+        if (patron.matcher(linea).matches()) {
+          contadorErrores++;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("Error al leer el archivo de log: " + log.toString() + " - " + e.getMessage());
+    }
+    System.out.println(
+        Thread.currentThread().getName() + " encontró " + contadorErrores + " errores en el log: " + log.toString());
+    return contadorErrores;
   }
 
   @Override
   protected Integer compute() {
-    if (fin - inicio <= limite) {
-      return lecturaLogs.buscarErrores();
+    System.out.println(Thread.currentThread().getName() + " procesando los logs desde " + inicio + " hasta " + fin);
+    int tamaño = fin - inicio;
+    if (tamaño <= 1) {
+      System.out.println("Procesando log individual: " + logs.get(inicio).toString());
+      Path log = logs.get(inicio);
+      return buscarErrores(log);
     } else {
-      int mid = (inicio + fin) / 2;
-      TareaAnalisis tareaIzquierda = new TareaAnalisis(logs, inicio, mid);
-      TareaAnalisis tareaDerecha = new TareaAnalisis(logs, mid, fin);
-      tareaDerecha.fork(); // Ejecuta la tarea derecha en un hilo separado
-      // Ejecuta la tarea izquierda en el hilo actual y espera a que la tarea derecha termine
-      return tareaIzquierda.compute() + tareaDerecha.join();
+      System.out.println(Thread.currentThread().getName() + " dividiendo logs desde " + inicio + " hasta " + fin);
+      // Dividir la tarea en dos sub-tareas
+      int mitad = (inicio + fin) / 2;
+      TareaAnalisis subTarea1 = new TareaAnalisis(logs, inicio, mitad);
+      TareaAnalisis subTarea2 = new TareaAnalisis(logs, mitad, fin);
+
+      // Ejecutar las sub-tareas en paralelo
+      subTarea1.fork();
+      int resultadoSubTarea2 = subTarea2.compute();
+      int resultadoSubTarea1 = subTarea1.join();
+
+      // Combinar los resultados de las sub-tareas
+      return resultadoSubTarea1 + resultadoSubTarea2;
     }
   }
 }
