@@ -112,12 +112,7 @@ class Lector {
     }
   }
 
-  /**
-   * Método que genera logs aleatorios y los escribe en un archivo.
-   * 
-   * @param rutaArchivo Ruta del archivo donde se escribirán los logs.
-   * @param tamaño      Número de logs a generar.
-   */
+  
   private static void escribirLogAleatorios(BufferedWriter archivo, int tamaño) throws IOException {
     for (int i = 0; i < tamaño; i++) {
       // Genera un log aleatorio, con un 10% de probabilidad de ser un ERROR y un 90%
