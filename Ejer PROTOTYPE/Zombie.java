@@ -1,10 +1,15 @@
-public class Zombie implements Cloneable {
+public class Zombie {
     private int salud;
     private int danio;
 
     public Zombie(int salud, int danio) {
         this.salud = salud;
         this.danio = danio;
+    }
+
+    public Zombie(Zombie oriZombie) {
+        this.salud = oriZombie.salud;
+        this.danio = oriZombie.danio;
     }
 
     public int turno(int saludJugador) {
@@ -36,12 +41,7 @@ public class Zombie implements Cloneable {
         return salud;
     }
 
-    @Override
     public Zombie clone() {
-        try { 
-            return (Zombie) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
+        return new Zombie(this);
     }
 }
