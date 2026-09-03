@@ -58,8 +58,11 @@ class Lector {
     TareaAnalisis tarea = new TareaAnalisis(archivosLogs, 0, archivosLogs.size());
 
     try (ForkJoinPool pool = new ForkJoinPool();) {
+      long inicio = System.currentTimeMillis();
       int totalErrores = pool.invoke(tarea);
+      long fin = System.currentTimeMillis();
       System.out.println("Total de errores encontrados: " + totalErrores);
+      System.out.println("Tiempo transcurrido: " + (fin - inicio) + " ms");
     } catch (Exception e) {
       System.out.println("Error al procesar los logs: " + e.getMessage());
       return;
